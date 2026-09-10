@@ -16,6 +16,10 @@ function ensureFal() {
   }
 }
 
+export function initializeProvider() {
+  ensureFal();
+}
+
 function dataUrlToBlob(dataUrl, maxBytes) {
   if (typeof dataUrl !== 'string') throw new Error('Archivo no válido.');
   const match = /^data:([a-z0-9.+-]+\/[a-z0-9.+-]+);base64,([a-z0-9+/=]+)$/i.exec(dataUrl);
