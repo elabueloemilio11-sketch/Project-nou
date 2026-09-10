@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#08090c">
+  <meta name="description" content="Tu estudio creativo con inteligencia artificial">
+  <title>Estudio AudioVisual V2</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#video" data-tab-link="video" aria-label="Estudio AudioVisual V2">
+        <span class="brand-icon">AV</span>
+        <span><b>ESTUDIO</b><small>AUDIOVISUAL V2</small></span>
+      </a>
+      <nav class="side-nav" aria-label="Secciones">
+        <button class="nav-item is-active" type="button" data-tab="video"><span>▶</span><b>Vídeo</b></button>
+        <button class="nav-item" type="button" data-tab="image"><span>◇</span><b>Imagen</b></button>
+        <button class="nav-item" type="button" data-tab="voice"><span>◉</span><b>Voz</b></button>
+        <button class="nav-item" type="button" data-tab="history"><span>↺</span><b>Historial</b></button>
+        <button class="nav-item" type="button" data-tab="settings"><span>⚙</span><b>Configuración</b></button>
+      </nav>
+      <div class="sidebar-status"><span id="sidebar-provider-dot"></span><p><b id="sidebar-provider-title">Comprobando…</b><small id="sidebar-provider-copy">Conexión del proveedor</small></p></div>
+      <p class="privacy-note">Tus claves permanecen en el servidor.</p>
+    </aside>
+
+    <main class="workspace">
+      <header class="topbar">
+        <div><span class="page-kicker">TU ESTUDIO CREATIVO</span><h1 id="page-title">Generador de vídeo</h1></div>
+        <div class="topbar-actions"><span id="provider-pill" class="provider-pill">COMPROBANDO</span><button id="help-button" class="icon-button" type="button" aria-label="Ayuda">?</button></div>
+      </header>
+
+      <section id="tab-video" class="tab-panel is-active" data-panel="video">
+        <div class="studio-grid">
+          <form id="video-form" class="generator-panel panel">
+            <section class="form-section">
+              <div class="section-heading"><div><span>01</span><h2>Elige el modelo</h2></div><small>Solo se activa si existe proveedor</small></div>
+              <div id="model-grid" class="model-grid" role="radiogroup" aria-label="Modelos de vídeo"></div>
+            </section>
+
+            <section class="form-section">
+              <div class="section-heading"><div><span>02</span><h2>Tipo de generación</h2></div></div>
+              <div class="segmented-control"><button class="is-active" type="button" data-mode="image">IMAGEN A VÍDEO</button><button type="button" data-mode="text">TEXTO A VÍDEO</button></div>
+            </section>
+
+            <section id="upload-section" class="form-section">
+              <div class="section-heading"><div><span>03</span><h2>Start frame y referencias</h2></div><small>Arrastra, pulsa o pega</small></div>
+              <label id="drop-zone" class="drop-zone">
+                <input id="video-images" type="file" accept="image/png,image/jpeg,image/webp" multiple>
+                <span class="upload-symbol">+</span>
+                <strong>Sube una o varias imágenes</strong>
+                <small>PNG, JPG o WEBP · máximo según configuración</small>
+              </label>
+              <div id="image-previews" class="image-previews"></div>
+            </section>
+
+            <section class="form-section">
+              <div class="section-heading"><div><span>04</span><h2>Describe tu vídeo</h2></div><small id="prompt-count">0 / 4000</small></div>
+              <label class="field-label" for="video-prompt">Prompt</label>
+              <textarea id="video-prompt" rows="6" maxlength="4000" placeholder="Describe acción, cámara, luz, ambiente y movimiento…" required></textarea>
+              <div id="negative-prompt-wrap" hidden><label class="field-label" for="negative-prompt">Negative prompt</label><textarea id="negative-prompt" rows="3" maxlength="2000" placeholder="Elementos que quieres evitar…"></textarea></div>
+            </section>
+
+            <section class="form-section">
+              <div class="section-heading"><div><span>05</span><h2>Ajustes de generación</h2></div></div>
+              <div class="settings-grid">
+                <div><label class="field-label" for="aspect-ratio">Formato</label><select id="aspect-ratio"></select></div>
+                <div><label class="field-label" for="duration">Duración</label><select id="duration"></select></div>
+                <div><label class="field-label" for="resolution">Resolución</label><select id="resolution"></select></div>
+                <div><label class="field-label" for="quality">Calidad</label><select id="quality"></select></div>
+                <div id="seed-wrap"><label class="field-label" for="seed">Seed <small>(opcional)</small></label><input id="seed" type="number" inputmode="numeric" placeholder="Aleatorio"></div>
+                <label id="audio-toggle-wrap" class="toggle-row"><input id="generate-audio" type="checkbox" checked><span></span><b>Generar audio</b></label>
+              </div>
+            </section>
+
+            <div class="cost-estimate"><div><span>COSTE ESTIMADO</span><strong id="estimated-price">Consultar proveedor</strong></div><p id="estimate-copy">El proveedor puede modificar sus tarifas.</p></div>
+            <p id="video-form-message" class="form-message" role="alert"></p>
+            <button id="generate-video" class="generate-button" type="submit"><span>▶</span><b>GENERAR VÍDEO</b><small id="generate-button-note">Requiere proveedor configurado</small></button>
+          </form>
+
+          <aside class="result-panel panel">
+            <div class="result-head"><div><span class="page-kicker">RESULTADO</span><h2>Vista previa</h2></div><span id="job-status" class="status-badge status-idle">LISTO</span></div>
+            <div id="result-stage" class="result-stage">
+              <div id="empty-result" class="empty-result"><span>▶</span><strong>Tu vídeo aparecerá aquí</strong><p>Selecciona un modelo, prepara la solicitud y confirma el coste antes de generar.</p></div>
+              <div id="job-progress" class="job-progress" hidden><span class="render-orbit"></span><strong id="job-progress-title">CREANDO TU VÍDEO…</strong><p id="job-progress-copy">Enviando la solicitud al proveedor.</p><div class="progress-track"><span id="job-progress-bar"></span></div><small id="job-progress-percent">0%</small></div>
+              <video id="result-video" controls playsinline hidden></video>
+              <audio id="result-audio" controls hidden></audio>
+            </div>
+            <div id="result-actions" class="result-actions" hidden><a id="download-result" class="primary-action" href="#" target="_blank" rel="noopener noreferrer" download>DESCARGAR</a><button id="repeat-generation" type="button">GENERAR OTRA VEZ</button><button id="use-start-frame" type="button">USAR COMO START FRAME</button></div>
+            <div class="truth-note"><span>✓</span><p>Esta app solo muestra <b>COMPLETADO</b> después de recibir el resultado real del proveedor.</p></div>
+          </aside>
+        </div>
+      </section>
+
+      <section id="tab-image" class="tab-panel" data-panel="image" hidden>
+        <div class="single-panel panel centered-panel"><div class="feature-icon">◇</div><span class="page-kicker">MÓDULO PREPARADO</span><h2>Generación de imagen</h2><p>Esta versión concentra la integración real en vídeo y voz. El módulo de imagen está separado para que puedas añadir un endpoint compatible sin reconstruir la aplicación.</p><span class="configuration-badge">REQUIERE CONFIGURACIÓN DE MODELO</span></div>
+      </section>
+
+      <section id="tab-voice" class="tab-panel" data-panel="voice" hidden>
+        <div class="studio-grid">
+          <form id="voice-form" class="generator-panel panel">
+            <div class="section-heading"><div><span>01</span><h2>Tipo de voz</h2></div><small>MiniMax mediante fal.ai</small></div>
+            <div class="segmented-control voice-mode"><button class="is-active" type="button" data-voice-mode="tts">TEXTO A VOZ</button><button type="button" data-voice-mode="clone">CLONAR VOZ</button></div>
+            <section id="voice-upload-section" class="form-section" hidden>
+              <label class="field-label" for="voice-file">Archivo WAV con consentimiento</label>
+              <label class="drop-zone compact-drop"><input id="voice-file" type="file" accept="audio/wav,audio/x-wav"><span class="upload-symbol">+</span><strong>Subir WAV</strong><small>Mínimo recomendado: 10 segundos, una sola voz</small></label>
+              <p id="voice-file-name" class="input-caption">Ningún archivo seleccionado</p>
+            </section>
+            <section class="form-section voice-fields">
+              <div id="voice-id-wrap"><label class="field-label" for="voice-id">Voice ID</label><input id="voice-id" type="text" placeholder="Wise_Woman o tu Voice ID"></div>
+              <div><label class="field-label" for="voice-speed">Velocidad <b id="voice-speed-value">1.0×</b></label><input id="voice-speed" class="range-input" type="range" min="0.5" max="2" step="0.1" value="1"></div>
+              <div class="full-row"><span class="field-label">Emoción</span><div id="emotion-chips" class="choice-chips"></div></div>
+              <div class="full-row"><label class="field-label" for="voice-text">Texto</label><textarea id="voice-text" rows="7" maxlength="4000" placeholder="Escribe la narración…" required></textarea></div>
+            </section>
+            <p id="voice-form-message" class="form-message" role="alert"></p>
+            <button id="generate-voice" class="generate-button" type="submit"><span>◉</span><b>GENERAR VOZ</b><small>La clave nunca sale del servidor</small></button>
+          </form>
+          <aside class="result-panel panel voice-result-panel">
+            <div class="result-head"><div><span class="page-kicker">AUDIO</span><h2>Resultado de voz</h2></div><span id="voice-job-status" class="status-badge status-idle">LISTO</span></div>
+            <div id="voice-result-stage" class="voice-result-stage"><div class="audio-visual"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><strong id="voice-result-title">Tu voz aparecerá aquí</strong><p id="voice-result-copy">Configura el texto, velocidad y emoción.</p><audio id="voice-result-audio" controls hidden></audio><a id="download-audio" class="primary-action" href="#" target="_blank" rel="noopener noreferrer" hidden>DESCARGAR AUDIO</a></div>
+            <div class="truth-note"><span>!</span><p>Clona solamente tu voz o una voz para la que tengas permiso explícito.</p></div>
+          </aside>
+        </div>
+      </section>
+
+      <section id="tab-history" class="tab-panel" data-panel="history" hidden>
+        <div class="single-panel panel"><div class="history-head"><div><span class="page-kicker">TUS PROYECTOS</span><h2>Historial de generaciones</h2></div><button id="clear-history" class="text-action" type="button">BORRAR HISTORIAL</button></div><div id="history-list" class="history-list"></div></div>
+      </section>
+
+      <section id="tab-settings" class="tab-panel" data-panel="settings" hidden>
+        <div class="single-panel panel"><span class="page-kicker">SEGURIDAD Y CONEXIONES</span><h2>Configuración</h2><p class="settings-intro">Aquí ves el estado, nunca el valor de una clave. Los secretos se añaden únicamente en Render → Environment.</p><div id="provider-list" class="provider-list"></div><div class="security-card"><span>◆</span><div><b>Ninguna API Key en el navegador</b><p>El frontend llama a este servidor. El servidor añade la clave y se comunica con el proveedor.</p></div></div><a class="docs-link" href="https://fal.ai/dashboard/keys" target="_blank" rel="noopener noreferrer">ABRIR PANEL DE CLAVES FAL.AI <span>↗</span></a></div>
+      </section>
+    </main>
+
+    <nav class="bottom-nav" aria-label="Navegación móvil">
+      <button class="is-active" type="button" data-tab="video"><span>▶</span><b>Vídeo</b></button>
+      <button type="button" data-tab="voice"><span>◉</span><b>Voz</b></button>
+      <button type="button" data-tab="history"><span>↺</span><b>Historial</b></button>
+      <button type="button" data-tab="settings"><span>⚙</span><b>Cuenta</b></button>
+    </nav>
+  </div>
+
+  <dialog id="help-dialog">
+    <div class="dialog-head"><div><span class="page-kicker">AYUDA RÁPIDA</span><h2>Antes de generar</h2></div><button id="close-help" class="icon-button" type="button">×</button></div>
+    <ol><li>Comprueba que fal.ai aparece como CONECTADO.</li><li>Selecciona un modelo disponible.</li><li>Sube una imagen si usas imagen a vídeo.</li><li>Escribe un prompt claro.</li><li>Consulta el coste en el proveedor.</li><li>Pulsa GENERAR y espera al estado COMPLETADO.</li></ol>
+    <button id="close-help-action" class="primary-action" type="button">ENTENDIDO</button>
+  </dialog>
+  <div id="toast" class="toast" role="status" hidden></div>
+</body>
+</html>

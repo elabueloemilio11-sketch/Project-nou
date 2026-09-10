@@ -1,0 +1,19 @@
+{
+  "name": "estudio-audiovisual-v2",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Estudio audiovisual modular para generación de vídeo y voz con IA",
+  "type": "module",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "dev": "node --watch src/server.js",
+    "start": "node src/server.js",
+    "test": "node --test",
+    "check": "node --check src/server.js && node --check src/models.js && node --check src/provider.js && node --test"
+  },
+  "dependencies": {
+    "@fal-ai/client": "1.10.1"
+  }
+}

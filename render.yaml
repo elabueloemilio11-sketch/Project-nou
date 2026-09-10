@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: estudio-audiovisual-v2
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    autoDeployTrigger: commit
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: FAL_KEY
+        sync: false
+      - key: APP_SIGNING_SECRET
+        generateValue: true
+      - key: MODEL_PRICE_USD_PER_SECOND
+        value: '{}'
