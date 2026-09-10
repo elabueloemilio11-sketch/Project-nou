@@ -1,7 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { once } from 'node:events';
+import { fal } from '@fal-ai/client';
 import { server } from '../src/server.js';
+import { initializeProvider } from '../src/provider.js';
 
 test('health, config and static app are served without exposing a key', async (t) => {
   process.env.APP_SIGNING_SECRET = 'a-secure-test-secret-with-more-than-32-characters';
@@ -35,6 +37,10 @@ test('health, config and static app are served without exposing a key', async (t
   assert.equal(rejected.status, 403);
 
   process.env.FAL_KEY = 'test-provider-key';
+  initializeProvider();
+  fal.queue.submit = async () => ({ request_id: 'server-test-request' });
+  fal.queue.status = async () => ({ status: 'COMPLETED', logs: [] });
+  fal.queue.result = async () => ({ data: { video: { url: 'https://example.invalid/result.mp4' } } });
   const created = await fetch(`${base}/api/generations/video`, {
     method: 'POST',
     headers: { 'content-type': 'application/json', origin: base },
