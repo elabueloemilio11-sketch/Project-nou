@@ -2,10 +2,11 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { fal } from '@fal-ai/client';
 import { getModel } from '../src/models.js';
-import { submitVideo, submitVoice } from '../src/provider.js';
+import { initializeProvider, submitVideo, submitVoice } from '../src/provider.js';
 
 test('Seedance uses the verified reference endpoint for multiple images', async () => {
   process.env.FAL_KEY = 'test-provider-key';
+  initializeProvider();
   let uploadIndex = 0;
   let submitted;
   fal.storage.upload = async () => `https://example.invalid/reference-${++uploadIndex}.jpg`;
@@ -38,6 +39,7 @@ test('Seedance uses the verified reference endpoint for multiple images', async 
 
 test('MiniMax speech sends the documented prompt field', async () => {
   process.env.FAL_KEY = 'test-provider-key';
+  initializeProvider();
   let submitted;
   fal.queue.submit = async (endpoint, options) => {
     submitted = { endpoint, input: options.input };
